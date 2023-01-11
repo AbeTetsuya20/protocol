@@ -2,7 +2,7 @@ import math
 import random
 
 # MAX_BIT は鍵の bit 長
-MAX_BIT = 500
+MAX_BIT = 10
 
 
 # テスト
