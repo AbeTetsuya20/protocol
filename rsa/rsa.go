@@ -18,7 +18,6 @@ type PrivateKey struct {
 
 // RSA 暗号の鍵を生成する
 func MakeKeys(bitSize int) (*PublicKey, *PrivateKey, error) {
-
 	// 2 つの bitSize/2 bit の素数を生成する
 	p, err := util.MakePrime(bitSize / 2)
 	if err != nil {
@@ -58,10 +57,10 @@ func MakeKeys(bitSize int) (*PublicKey, *PrivateKey, error) {
 	return &privateKey, &publicKey, nil
 }
 
-func RSAEncrypt(message, n, e *big.Int) *big.Int {
-	return new(big.Int).Exp(message, e, n)
+func RSAEncrypt(message *big.Int, publicKey *PublicKey) *big.Int {
+	return new(big.Int).Exp(message, publicKey.E, publicKey.N)
 }
 
-func RSADecrypt(message, n, d *big.Int) *big.Int {
-	return new(big.Int).Exp(message, d, n)
+func RSADecrypt(message *big.Int, publicKey *PublicKey, privateKey *PrivateKey) *big.Int {
+	return new(big.Int).Exp(message, privateKey.D, publicKey.N)
 }

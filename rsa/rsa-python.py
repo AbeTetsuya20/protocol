@@ -1,5 +1,6 @@
 import math
 import random
+import time
 
 # MAX_BIT は鍵の bit 長
 MAX_BIT = 10
@@ -70,9 +71,9 @@ def make_prime(a, b):
     p = random.randint(a, b)
     while not (isPrime(p)):
         p = random.randint(a, b)
-        print(".", end="")
-    print("!")
-    print("")
+        # print(".", end="")
+    # print("!")
+    # print("")
     return p
 
 
@@ -168,25 +169,45 @@ def int_to_message(message_int):
 def main():
     global MAX_BIT
 
-    if MAX_BIT == 0:
-        MAX_BIT = 100
+    # if MAX_BIT == 0:
+    #     MAX_BIT = 100
+    #
+    # # 鍵の生成と表示とテスト
+    # key = make_key(MAX_BIT)
+    # printer(key)
+    # key_test(key)
+    #
+    # # 暗号化・復号化
+    # message = message_to_int("hello")
+    # enc_result = rsa_enc(key, message)
+    # dec_result = rsa_dec(key, enc_result)
+    #
+    # print("平文　(int)　　　　　: ", message)
+    # print("平文　(str)　　　　　: ", int_to_message(message))
+    # print("エンコード後　(int)　: ", enc_result)
+    # print("デコード後　(int)　　: ", dec_result)
+    # print("デコード後　(str)　　: ", int_to_message(dec_result))
 
-    # 鍵の生成と表示とテスト
-    key = make_key(MAX_BIT)
-    printer(key)
-    key_test(key)
+    if True:
+        # 30 bit から 1024 bit まで、20 bit 幅の鍵を生成し、テストする
+        message = 100
+        time_list = []
+        bit_list = []
+        for i in range(30, 1024, 20):
+            bit_list.append(i)
 
-    # 暗号化・復号化
-    message = message_to_int("hello")
-    enc_result = rsa_enc(key, message)
-    dec_result = rsa_dec(key, enc_result)
+            start = time.time()
 
-    print("平文　(int)　　　　　: ", message)
-    print("平文　(str)　　　　　: ", int_to_message(message))
-    print("エンコード後　(int)　: ", enc_result)
-    print("デコード後　(int)　　: ", dec_result)
-    print("デコード後　(str)　　: ", int_to_message(dec_result))
+            for j in range(3):
+                key = make_key(i)
+                message_enc = rsa_enc(key, message)
+                message_enc_dec = rsa_dec(key, message_enc)
 
+            end = time.time()
+            print("bit数: ", i, " 暗号化・復号化にかかった時間: ", (end - start)/3, " 秒")
+            time_list.append((end - start)/3)
+        print(time_list)
+        print(bit_list)
 
 if __name__ == "__main__":
     print("実行開始")

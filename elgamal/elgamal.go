@@ -2,7 +2,6 @@ package elgamal
 
 import (
 	"crypto/rand"
-	"fmt"
 	"github.com/AbeTetsuya20/protocol/util"
 	"math/big"
 )
@@ -17,29 +16,6 @@ type PublicKey struct {
 // 秘密鍵の構造体
 type PrivateKey struct {
 	X *big.Int
-}
-
-func Elgamal(message *big.Int) {
-	publicKeyElgamal, privateKeyElgamal, err := MakeKeys(2048)
-	if err != nil {
-		panic(err)
-	}
-	messageEncElgamal1, messageEncElgamal2, err := Encrypt(publicKeyElgamal, message)
-	if err != nil {
-		panic(err)
-	}
-	messageEncElgamalDec, err := Decrypt(publicKeyElgamal, privateKeyElgamal, messageEncElgamal1, messageEncElgamal2)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("message: %d \n", message)
-	fmt.Printf("messageEncElgamal1: %d \n", messageEncElgamal1)
-	fmt.Printf("messageEncElgamal2: %d \n", messageEncElgamal2)
-	fmt.Printf("messageEncElgamalDec: %d \n", messageEncElgamalDec)
-
-	fmt.Printf("publicKeyElgamal: %+v \n", publicKeyElgamal)
-	fmt.Printf("privateKeyElgamal: %+v \n", privateKeyElgamal)
 }
 
 // Elgamal 暗号の鍵を生成する
@@ -109,7 +85,7 @@ func MakeKeys(bitSize int) (*PublicKey, *PrivateKey, error) {
 }
 
 // 暗号化
-func Encrypt(publicKey *PublicKey, message *big.Int) (*big.Int, *big.Int, error) {
+func Encrypt(message *big.Int, publicKey *PublicKey) (*big.Int, *big.Int, error) {
 	// r をランダムに選ぶ
 	r, err := rand.Int(rand.Reader, publicKey.P)
 	if err != nil {
@@ -129,7 +105,7 @@ func Encrypt(publicKey *PublicKey, message *big.Int) (*big.Int, *big.Int, error)
 }
 
 // 復号化
-func Decrypt(publicKey *PublicKey, privateKey *PrivateKey, c1 *big.Int, c2 *big.Int) (*big.Int, error) {
+func Decrypt(c1 *big.Int, c2 *big.Int, publicKey *PublicKey, privateKey *PrivateKey) *big.Int {
 	// m = c2 * c1^x mod p
 	m := big.NewInt(1)
 	m.Exp(c1, privateKey.X, publicKey.P)
@@ -137,5 +113,5 @@ func Decrypt(publicKey *PublicKey, privateKey *PrivateKey, c1 *big.Int, c2 *big.
 	m.Mul(m, c2)
 	m.Mod(m, publicKey.P)
 
-	return m, nil
+	return m
 }

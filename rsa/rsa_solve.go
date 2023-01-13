@@ -1,22 +1,21 @@
-package advance
+package rsa
 
 import (
 	"fmt"
-	"github.com/AbeTetsuya20/protocol/rsa"
 	"github.com/AbeTetsuya20/protocol/util"
 	"math"
 	"math/big"
 )
 
 // 公開鍵を与えたら、秘密鍵を特定する関数
-func SolveRSA(key *rsa.PublicKey) (*rsa.PrivateKey, error) {
+func SolveRSA(key *PublicKey) (*PrivateKey, error) {
 	p, q, err := Factorize(key.N)
 	if err != nil {
 		return nil, err
 	}
 
 	d := GetD(p, q, key.E)
-	return &rsa.PrivateKey{D: d}, nil
+	return &PrivateKey{D: d}, nil
 }
 
 // n を 2 つの素数に素因数分解する
@@ -90,7 +89,7 @@ func SieveOfEratosthenes(n int64) ([]*big.Int, error) {
 
 // 2 つの数字 p, q から、逆元 d を求める
 func GetD(p, q, e *big.Int) *big.Int {
-	// (p-1) * (q-1)
+	// (p-1),　(q-1)
 	pMinus1 := big.NewInt(1).Sub(p, big.NewInt(1))
 	qMinus1 := big.NewInt(1).Sub(q, big.NewInt(1))
 
